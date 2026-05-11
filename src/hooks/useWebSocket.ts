@@ -15,12 +15,15 @@ export function useWebSocket(onMessage: (msg: WSMessage) => void) {
   useEffect(() => {
     onMessageRef.current = onMessage;
   });
-
+const wsUrl = import.meta.env.VITE_API_URL
+  ?.replace("https://", "wss://")
+  ?.replace("/api", "");
   useEffect(() => {
     if (!token) return;
 
     // Le backend attend le JWT en query param (pas en header — limitation du protocol WS)
-    const ws = new WebSocket(`ws://localhost:8000/ws?token=${token}`);
+    //const ws = new WebSocket(`ws://localhost:8000/ws?token=${token}`);
+    const ws = new WebSocket(`${wsUrl}/ws?token=${token}`);
 
     ws.onopen    = () => console.log("WebSocket connecté");
     ws.onclose   = () => console.log("WebSocket fermé");
